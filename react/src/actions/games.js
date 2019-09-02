@@ -1,9 +1,10 @@
 const {
     SYNC_GAME_DATA_ACTION,
-    SYNC_GAME_MODES_ACTION
+    SYNC_GAME_MODES_ACTION,
 } = require('../constants/actionTypes')
 const {
     POST_START_NEW_GAME,
+    GET_EXISTING_GAME
 } = require('../constants/endpoints')
 const api = require('../../../helpers/api')
 
@@ -42,4 +43,13 @@ module.exports = {
             console.error(e)
         }
     },
+
+    loadGameData: async (dispatch, gameId) => {
+        try {
+            let response = await api.get(GET_EXISTING_GAME.replace(':game_id', gameId))
+            dispatch(syncGameData(response.data))
+        } catch (e) {
+            console.log(e)
+        }
+    }
 }

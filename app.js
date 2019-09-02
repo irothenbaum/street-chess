@@ -17,11 +17,12 @@ const server = require('http').createServer(app)
 socketServer(app, server)
 
 // override environment variables from auth
-process.env.FFMPEG_PATH = auth.ffmpeg
 process.env.NODE_ENV = auth.environment
 
-// make sure our node environment matches our auth environment
+app.set('etag', false)
+
 app.use(function(req, res, next) {
+    // make sure our node environment matches our auth environment
     req.app.set('env', auth.environment)
 
     // make some configurations available to the view
@@ -29,6 +30,9 @@ app.use(function(req, res, next) {
         environment: auth.environment,
         static: auth.static.resource
     };
+
+    // disable cache
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private')
 
     return next()
 })
@@ -83,7 +87,7 @@ app.use(morgan('tiny', { stream: logger.stream }))
 app.use(auth.static.route, express.static(path.join(__dirname, 'assets')));
 
 // load our controllers -- this replaces the idea of routes for a more familiar MVC style
-app.use(require('./controllers'))
+app.use(require('./routes'))
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

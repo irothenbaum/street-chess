@@ -4,7 +4,7 @@ const {
     loadGameModes
 } = require('../actions')
 const {
-    ROUTE_GAME
+    ROUTE_PLAY_GAME
 } = require('../constants/routes')
 const React = require('react')
 const { connect } = require('react-redux')
@@ -20,8 +20,9 @@ class GameSelector extends React.Component {
     }
 
     async startGame(gameModeId) {
-        await this.props.dispatchStartNewGame(gameModeId)
-        this.props.history.push(ROUTE_GAME.replace(':id', newGame.id))
+        let newGame = await this.props.dispatchStartNewGame(gameModeId)
+        // TODO: add that constructLink function to the express-react-base repo
+        this.props.history.push(ROUTE_PLAY_GAME.replace(':game_id', newGame.id))
     }
 
     render() {
